@@ -372,7 +372,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void setLowSpeed() {
-    maxSpeedMPS = Constants.DriveConstants.kMaxSpeedMetersPerSecond;
+    maxSpeedMPS = 2.5;
   }
 
 }

@@ -24,8 +24,8 @@ public class ArmControlCommand extends Command {
     @Override
     public void execute() {
         double leftTrigger = RobotContainer.m_operatorController.getLeftTriggerAxis()
-                * 0.5;
-        double rightTrigger = RobotContainer.m_operatorController.getRightTriggerAxis() * -0.5;
+                * -0.5;
+        double rightTrigger = RobotContainer.m_operatorController.getRightTriggerAxis() * 0.5;
         value = 0;
         ArmSubsystem.moveArm(leftTrigger, rightTrigger);
     }

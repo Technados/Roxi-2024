@@ -6,6 +6,8 @@
 
 package frc.robot;
 
+import javax.naming.Name;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -43,6 +45,11 @@ import frc.robot.commands.ArmControlCommand;
 import frc.robot.commands.ArmHome;
 import frc.robot.commands.AmpArm;
 import frc.robot.commands.ScoreSpeaker;
+import frc.robot.commands.ShootSpeakerGroup;
+import frc.robot.commands.StartIntake;
+import frc.robot.commands.StartShooter;
+import frc.robot.commands.StopIntake;
+import frc.robot.commands.StopShooter;
 import frc.robot.commands.IntakeNote;
 
 /*
@@ -73,6 +80,15 @@ public class RobotContainer {
 
         private final ScoreSpeaker scoreSpeakerCommand = new ScoreSpeaker(m_shooter);
 
+        private final StartIntake startIntakeCommand = new StartIntake(m_intake);
+
+        private final StopIntake stopIntakeCommand = new StopIntake(m_intake);
+
+        private final StartShooter startShooterCommand = new StartShooter(m_shooter);
+
+        private final StopShooter stopShooterCommand = new StopShooter(m_shooter);
+
+        private final ShootSpeakerGroup shootSpeakerParallelGroup = new ShootSpeakerGroup(m_intake, m_shooter);
         // create autoChooser
         SendableChooser<String> autoChooser = new SendableChooser<>();
 
@@ -135,7 +151,11 @@ public class RobotContainer {
                 NamedCommands.registerCommand("AmpArm", ampArmCommand);
                 NamedCommands.registerCommand("ArmHome", armHomeCommand);
                 NamedCommands.registerCommand("ScoreSpeaker", scoreSpeakerCommand);
-
+                NamedCommands.registerCommand("ScoreSpeakerGroup", shootSpeakerParallelGroup);
+                NamedCommands.registerCommand("StartIntake", startIntakeCommand);
+                NamedCommands.registerCommand("StopIntake", stopIntakeCommand);
+                NamedCommands.registerCommand("StartShooter", startShooterCommand);
+                NamedCommands.registerCommand("StopShooter", stopShooterCommand);
                 // set default arm command
                 m_arm.setDefaultCommand(m_armControlCommand);
 
@@ -162,7 +182,10 @@ public class RobotContainer {
                 // Adding autos to the autoChooser
                 // First arg if the name that will show in shuffleboard
                 // Second arg is the name of the auto inside of PathPlannerGUI
-                autoChooser.addOption("A2NS", "Test");
+                autoChooser.addOption("A2NS", "A2NS");
+                autoChooser.addOption("Line", "Line");
+                autoChooser.addOption("A2NS2", "A2NS2");
+                autoChooser.addOption("CenterTwoPiece", "CenterTwoPiece");
 
                 // Creating a new shuffleboard tab and adding the autoChooser
                 Shuffleboard.getTab("PathPlanner Autonomous").add(autoChooser);
