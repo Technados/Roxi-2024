@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.37,
-      "y": 5.5
+      "x": 0.38,
+      "y": 7.31
     },
-    "rotation": 0
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CenterHomeToShootLine"
+            "pathName": "AmpSideToShootLine"
           }
         },
         {
@@ -38,7 +38,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.75
+            "waitTime": 1.0
           }
         },
         {
@@ -60,7 +60,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CenterShootLineToMidNote"
+                  "pathName": "ShootLineToAmpSideNote"
                 }
               },
               {
@@ -81,7 +81,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CenterNoteToShootLine"
+            "pathName": "AmpSideNoteToShootLine"
           }
         },
         {
@@ -123,6 +123,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Amp-Autos",
   "choreoAuto": false
 }

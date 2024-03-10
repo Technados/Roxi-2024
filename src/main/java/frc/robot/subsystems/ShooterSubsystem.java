@@ -30,8 +30,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private RelativeEncoder rightShooterEncoder = rightShooterMotor.getEncoder();
 
   // Stores the speed of the Shooter motor
-  private float leftShooterSpeed = 0.70f;
-  private float rightShooterSpeed = 0.70f;
+  private float leftShooterSpeed = 0.85f;
+  private float rightShooterSpeed = 0.85f;
 
   // private float lowSpeed = 0.65f;
 
@@ -79,6 +79,12 @@ public class ShooterSubsystem extends SubsystemBase {
   public void startShooter() {
     leftShooterMotor.set(leftShooterSpeed);
     rightShooterMotor.set(rightShooterSpeed);
+  }
+
+  // Spins the shooter motors in reverse
+  public void reverseShooter() {
+    leftShooterMotor.set(-leftShooterSpeed * 0.5);
+    rightShooterMotor.set(-rightShooterSpeed * 0.5);
   }
 
   // Stops the shooter motors

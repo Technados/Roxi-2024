@@ -39,6 +39,7 @@ import frc.robot.hijackablerotation.Joystick;
 import frc.robot.hijackablerotation.RotationSource;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.commands.ArmControlCommand;
@@ -68,6 +69,8 @@ public class RobotContainer {
         private final ShooterSubsystem m_shooter = new ShooterSubsystem();
 
         private final ArmSubsystem m_arm = new ArmSubsystem();
+
+        private final VisionSubsystem m_cam = new VisionSubsystem();
 
         // Commands
         private final ArmControlCommand m_armControlCommand = new ArmControlCommand(m_arm);
@@ -182,10 +185,15 @@ public class RobotContainer {
                 // Adding autos to the autoChooser
                 // First arg if the name that will show in shuffleboard
                 // Second arg is the name of the auto inside of PathPlannerGUI
-                autoChooser.addOption("A2NS", "A2NS");
-                autoChooser.addOption("Line", "Line");
-                autoChooser.addOption("A2NS2", "A2NS2");
+
                 autoChooser.addOption("CenterTwoPiece", "CenterTwoPiece");
+                autoChooser.addOption("CenterThreePiece", "CenterThreePiece");
+                autoChooser.addOption("AmpSideTwoPiece", "AmpSideTwoPiece");
+                autoChooser.addOption("OutTheWay", "OutTheWay");
+                autoChooser.addOption("CenterShootStay", "CenterShootStay");
+                autoChooser.addOption("AmpSideShootStay", "AmpSideShootStay");
+                autoChooser.addOption("SourceSideShootStay", "SourceSideShootStay");
+                autoChooser.addOption("none", null);
 
                 // Creating a new shuffleboard tab and adding the autoChooser
                 Shuffleboard.getTab("PathPlanner Autonomous").add(autoChooser);
@@ -243,6 +251,11 @@ public class RobotContainer {
                                 .onTrue(new InstantCommand(() -> m_shooter.startShooter(), m_shooter))
                                 .onFalse(new InstantCommand(() -> m_shooter.stopShooter(), m_shooter));
 
+                // Reverse sgooters (anti-pew pew!)
+                new JoystickButton(m_operatorController, Button.kB.value)
+                                .onTrue(new InstantCommand(() -> m_shooter.reverseShooter(), m_shooter))
+                                .onFalse(new InstantCommand(() -> m_shooter.stopShooter(), m_shooter));
+
                 new JoystickButton(m_operatorController, Button.kX.value)
                                 .onTrue(new InstantCommand(() -> m_intake.resetEncoders(), m_intake));
 
@@ -273,6 +286,10 @@ public class RobotContainer {
         // If the alliance chosen is NOT BLUE - the pathplanner path will flip to red
         // using the .flipPath() method
         public Command getAutonomousCommand() {
+
+                if (autoChooser.getSelected() == null) {
+                        return null;
+                }
 
                 // If Alliance is blue reset odometry to the starting pose of the file
                 if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
