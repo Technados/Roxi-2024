@@ -52,12 +52,6 @@
           "data": {
             "name": "StopShooter"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StopIntake"
-          }
         }
       ]
     }

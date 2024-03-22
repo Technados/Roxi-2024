@@ -3,9 +3,9 @@
   "startingPose": {
     "position": {
       "x": 0.73,
-      "y": 4.55
+      "y": 6.6
     },
-    "rotation": -57.129999999999995
+    "rotation": 60.0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SourceSideToShootLine"
+            "pathName": "AmpSideToShootLine"
           }
         },
         {
@@ -38,7 +38,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.75
           }
         },
         {
@@ -54,20 +54,21 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "StopIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ShootLineToOutTheWay"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ShootLineToMidLine"
+                }
+              }
+            ]
           }
         }
       ]
     }
   },
-  "folder": "Source-Autos",
+  "folder": null,
   "choreoAuto": false
 }

@@ -15,21 +15,17 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
-//import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import com.kauailabs.navx.frc.AHRS;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -70,8 +66,6 @@ public class DriveSubsystem extends SubsystemBase {
   // sub system had to be chnaged to negative values
   private final AHRS m_gyro = new AHRS(SerialPort.Port.kUSB);
 
-  // Next line is original gyro setup using ADIS16470 gyro
-  // private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
   ////////////////////////////////////////////////////////////////////////////////////
 
   // Slew rate filter variables for controlling lateral acceleration
@@ -132,8 +126,8 @@ public class DriveSubsystem extends SubsystemBase {
         this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-            new PIDConstants(1, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(1, 0.0, 0.0), // Rotation PID constants
+            new PIDConstants(3.50, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(1.0, 0.0, 0.0), // Rotation PID constants
             Constants.AutoConstants.kMaxSpeedMetersPerSecond, // Max module speed, in m/s
             0.32385, // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig()), // Default path replanning config. See the API for the options here
@@ -155,10 +149,10 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Gyro", getHeading()); // returns the heading of the robot and sends to dashboard
 
-    for (int i = 0; i < 4; i++) {
-      swerveModulePositions[i] = swerveModules[i].getPosition();
-      swerveModules[i].putSmartDashboard();
-    }
+    // for (int i = 0; i < 4; i++) {
+    // swerveModulePositions[i] = swerveModules[i].getPosition();
+    // swerveModules[i].putSmartDashboard();
+    // }
 
     // Update the odometry in the periodic block
     m_odometry.update(
@@ -171,10 +165,12 @@ public class DriveSubsystem extends SubsystemBase {
 
         });
 
-    SmartDashboard.putNumber("2DPose X", m_odometry.getPoseMeters().getX()); // gets the field relative 'x' position of
-                                                                             // the robot and send to dashboard
-    SmartDashboard.putNumber("2DPose Y", m_odometry.getPoseMeters().getY()); // gets the field relative 'y' position of
-                                                                             // the robot and send to dashboard
+    SmartDashboard.putNumber("2DPose X", m_odometry.getPoseMeters().getX()); //
+    // gets the field relative 'x' position of
+    // the robot and send to dashboard
+    SmartDashboard.putNumber("2DPose Y", m_odometry.getPoseMeters().getY()); //
+    // gets the field relative 'y' position of
+    // the robot and send to dashboard
 
   }
 
@@ -368,107 +364,11 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void setHighSpeed() {
-    maxSpeedMPS = 3.5;
+    maxSpeedMPS = 4.0;
   }
 
   public void setLowSpeed() {
-    maxSpeedMPS = 2.5;
+    maxSpeedMPS = 1.5;
   }
 
 }
-/**
- * Unused imports:
- * 
- * // import edu.wpi.first.networktables.NetworkTable;
- * // import edu.wpi.first.networktables.NetworkTableEntry;
- * // import edu.wpi.first.networktables.NetworkTableInstance;
- * // import frc.robot.Vision.Limelight;
- * // import frc.robot.Vision.LimelightHelpers;
- * //import edu.wpi.first.wpilibj.SPI;
- * //import edu.wpi.first.math.MathUtil;
- * //import edu.wpi.first.math.controller.PIDController;
- * //import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
- * //import edu.wpi.first.wpilibj2.command.button.Trigger;
- */
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// below was an example from limelight's github - possibly to be used later
-// // simple proportional turning control with Limelight.
-// // "proportional control" is a control algorithm in which the output is
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// proportional
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// to
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// the
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// error.
-// // in this case, we are going to return an angular velocity that is
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// proportional
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// to
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// the
-// // "tx" value from the Limelight.
-// double limelight_aim_proportional()
-// {
-// // kP (constant of proportionality)
-// // this is a hand-tuned number that determines the aggressiveness of our
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// proportional
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// control
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// loop
-// // if it is too high, the robot will oscillate around.
-// // if it is too low, the robot will never reach its target
-// // if the robot never turns in the correct direction, kP should be inverted.
-// double kP = .035;
-
-// // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the
-// rightmost edge of
-// // your limelight 3 feed, tx should return roughly 31 degrees.
-// double targetingAngularVelocity = LimelightHelpers.getTX("limelight") * kP;
-
-// // convert to radians per second for our drive method
-// targetingAngularVelocity *= DriveConstants.kMaxAngularSpeed;
-
-// //invert since tx is positive when the target is to the right of the
-// crosshair
-// targetingAngularVelocity *= -1.0;
-
-// return targetingAngularVelocity;
-// }
-
-// // simple proportional ranging control with Limelight's "ty" value
-// // this works best if your Limelight's mount height and target mount height
-// are different.
-// // if your limelight and target are mounted at the same or similar heights,
-// use "ta" (area) for target ranging rather than "ty"
-// double limelight_range_proportional()
-// {
-// double kP = .1;
-// double targetingForwardSpeed = LimelightHelpers.getTY("limelight") * kP;
-// targetingForwardSpeed *= DriveConstants.kMaxSpeedMetersPerSecond;
-// targetingForwardSpeed *= -1.0;
-// return targetingForwardSpeed;
-// }
-
-/**
- * Method to rotate the robot to aim at april tag using Limelight data from
- * LLSubsystem
- * *
- * 
- * @param xSpeed        Speed of the robot in the x direction (forward).
- * @param ySpeed        Speed of the robot in the y direction (sideways).
- * @param rot           Angular rate of the robot.
- * @param fieldRelative Whether the provided x and y speeds are relative to the
- *                      field.
- * @param rateLimit     Whether to enable rate limiting for smoother control.
- */
-// public void aimAtTarget(double xSpeed, double ySpeed, double rot, boolean
-// fieldRelative, boolean rateLimit){
-
-// // while the A-button is pressed, overwrite some of the driving values with
-// the output of our limelight methods
-
-// final var rot_limelight = limelight_aim_proportional();
-// rot = rot_limelight;
-
-// final var forward_limelight = limelight_range_proportional();
-// xSpeed = forward_limelight;
-
-// //while using Limelight, turn off field-relative driving.
-// fieldRelative = false;
-// }

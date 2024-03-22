@@ -28,14 +28,15 @@ public class IntakeSubsystem extends SubsystemBase {
   private RelativeEncoder intakeEncoder = intakeMotor.getEncoder();
 
   // Stores the speed of the intake motor
-  private float intakeRingSpeed = 0.80f;
+  private float intakeRingSpeed = 0.90f;
   // private float lowSpeed = 0.65f;
 
   public IntakeSubsystem() {
     // Reset the motors
     intakeMotor.restoreFactoryDefaults();
 
-    // Sets the right side motors to be inverted
+    // Sets the intake motor to be inverted
+    intakeMotor.setInverted(false);
     intakeMotor.setInverted(false);
 
     // Sets idle mode of the motor controllers to brake mode
@@ -50,9 +51,9 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    int num = (int) (intakeRingSpeed * 100);
-    String percent = String.valueOf(num);
-    SmartDashboard.putString("Intake Motors Speed", percent + "%");
+    // int num = (int) (intakeRingSpeed * 100);
+    // String percent = String.valueOf(num);
+    // SmartDashboard.putString("Intake Motors Speed", percent + "%");
   }
 
   // Returns an instance of this subsystem

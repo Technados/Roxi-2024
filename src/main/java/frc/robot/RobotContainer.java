@@ -6,8 +6,6 @@
 
 package frc.robot;
 
-import javax.naming.Name;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -33,13 +31,9 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 //import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import frc.robot.Constants.OIConstants;
-
-import frc.robot.hijackablerotation.AprilTagLock;
-import frc.robot.hijackablerotation.Joystick;
-import frc.robot.hijackablerotation.RotationSource;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+//import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.commands.ArmControlCommand;
@@ -51,6 +45,9 @@ import frc.robot.commands.StartIntake;
 import frc.robot.commands.StartShooter;
 import frc.robot.commands.StopIntake;
 import frc.robot.commands.StopShooter;
+import frc.robot.hijackablemovement.AprilTagLock;
+import frc.robot.hijackablemovement.Joystick;
+import frc.robot.hijackablemovement.MovementSource;
 import frc.robot.commands.IntakeNote;
 
 /*
@@ -70,7 +67,7 @@ public class RobotContainer {
 
         private final ArmSubsystem m_arm = new ArmSubsystem();
 
-        private final VisionSubsystem m_cam = new VisionSubsystem();
+        // private final VisionSubsystem m_cam = new VisionSubsystem();
 
         // Commands
         private final ArmControlCommand m_armControlCommand = new ArmControlCommand(m_arm);
@@ -92,8 +89,11 @@ public class RobotContainer {
         private final StopShooter stopShooterCommand = new StopShooter(m_shooter);
 
         private final ShootSpeakerGroup shootSpeakerParallelGroup = new ShootSpeakerGroup(m_intake, m_shooter);
+
         // create autoChooser
         SendableChooser<String> autoChooser = new SendableChooser<>();
+
+        boolean isFieldRelative = true;
 
         // Controller Buttons Used
 
@@ -133,7 +133,9 @@ public class RobotContainer {
         // The operator's controller
         public static XboxController m_operatorController = new XboxController(OIConstants.kOperatorControllerPort);
 
-        private RotationSource hijackableRotation = new Joystick(); // get rotation from driver input;
+        private MovementSource hijackableRotation = new Joystick(); // get rotation from driver input;
+
+        private MovementSource hijackableTranslation = new Joystick();
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Command Groups
@@ -167,14 +169,13 @@ public class RobotContainer {
                 // Turning is controlled by the X axis of the right stick.
                 m_robotDrive.setDefaultCommand(
                                 new RunCommand(() -> m_robotDrive.drive(
-                                                -MathUtil.applyDeadband(m_driverController.getLeftY(),
-                                                                OIConstants.kDriveDeadband), // * 0.95
+                                                hijackableTranslation.getXSpeed(), // * 0.95
                                                 -MathUtil.applyDeadband(m_driverController.getLeftX(),
                                                                 OIConstants.kDriveDeadband), // * 0.95
                                                 // -MathUtil.applyDeadband( m_driverController.getRightX(),
                                                 // OIConstants.kDriveDeadband), // * 0.95
                                                 hijackableRotation.getR(), // * 0.95
-                                                true, true), m_robotDrive));
+                                                isFieldRelative, true), m_robotDrive));
 
                 // set the arm subsystem to run the "runAutomatic" function continuously when no
                 // other command
@@ -187,12 +188,17 @@ public class RobotContainer {
                 // Second arg is the name of the auto inside of PathPlannerGUI
 
                 autoChooser.addOption("CenterTwoPiece", "CenterTwoPiece");
+                autoChooser.addOption("AmpSideMidLine", "AmpSideMidLine");
+                autoChooser.addOption("Turning", "Turning");
+                autoChooser.addOption("CenterFourPiece", "CenterFourPiece");
+                autoChooser.addOption("NewCenterFourPiece", "NewCenterFourPiece");
                 autoChooser.addOption("CenterThreePiece", "CenterThreePiece");
                 autoChooser.addOption("AmpSideTwoPiece", "AmpSideTwoPiece");
                 autoChooser.addOption("OutTheWay", "OutTheWay");
                 autoChooser.addOption("CenterShootStay", "CenterShootStay");
                 autoChooser.addOption("AmpSideShootStay", "AmpSideShootStay");
                 autoChooser.addOption("SourceSideShootStay", "SourceSideShootStay");
+                autoChooser.addOption("KPTuning", "KPTuning");
                 autoChooser.addOption("none", null);
 
                 // Creating a new shuffleboard tab and adding the autoChooser
@@ -225,14 +231,18 @@ public class RobotContainer {
                 // April tag using LL data
                 new JoystickButton(m_driverController, Button.kA.value)
                                 .onTrue(new InstantCommand(() -> hijackableRotation = new AprilTagLock()))
-                                .onFalse(new InstantCommand(() -> hijackableRotation = new Joystick()));
+                                .onTrue(new InstantCommand(() -> hijackableTranslation = new AprilTagLock()))
+                                .onTrue(new InstantCommand(() -> isFieldRelative = false))
+                                .onFalse(new InstantCommand(() -> hijackableRotation = new Joystick()))
+                                .onFalse(new InstantCommand(() -> hijackableTranslation = new Joystick()))
+                                .onFalse(new InstantCommand(() -> isFieldRelative = true));
 
-                // Hold the left bumper to enable high speed mode when crossing the field
-                // (currently: 3.5)
-                // Normal speed mode enabled by default (currently (2.5))
+                // Hold the left bumper to enable low speed mode when crossing the field
+                // (currently: 2.5)
+                // High speed mode enabled by default (currently (4.0))
                 new JoystickButton(m_driverController, Button.kLeftBumper.value)
-                                .onTrue(new InstantCommand(() -> m_robotDrive.setHighSpeed(), m_robotDrive))
-                                .onFalse(new InstantCommand(() -> m_robotDrive.setLowSpeed(), m_robotDrive));
+                                .onTrue(new InstantCommand(() -> m_robotDrive.setLowSpeed(), m_robotDrive))
+                                .onFalse(new InstantCommand(() -> m_robotDrive.setHighSpeed(), m_robotDrive));
                 //////////////////////////////////////////////////////////////////////////////////////////////////
                 ///////////////////////////////// Operator Controller commands
                 ////////////////////////////////////////////////////////////////////////////////////////////////// /////////////////////////////////////

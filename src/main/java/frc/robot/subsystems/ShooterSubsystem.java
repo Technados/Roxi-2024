@@ -56,15 +56,19 @@ public class ShooterSubsystem extends SubsystemBase {
     rightShooterMotor.setIdleMode(ShooterConstants.kRightShooterIdleMode);
 
     // Resetting the encoder postion on robot startup
-    resetEncoders();
+    leftShooterEncoder.setPosition(0);
+    rightShooterEncoder.setPosition(0);
+
+    leftShooterMotor.burnFlash();
+    rightShooterMotor.burnFlash();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    int num = (int) (leftShooterSpeed * 100);
-    String percent = String.valueOf(num);
-    SmartDashboard.putString("Shooter Motors Speed", percent + "%");
+    // int num = (int) (leftShooterSpeed * 100);
+    // String percent = String.valueOf(num);
+    // SmartDashboard.putString("Shooter Motors Speed", percent + "%");
   }
 
   // Returns an instance of this subsystem
