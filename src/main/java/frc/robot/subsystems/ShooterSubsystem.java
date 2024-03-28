@@ -33,6 +33,10 @@ public class ShooterSubsystem extends SubsystemBase {
   private float leftShooterSpeed = 0.85f;
   private float rightShooterSpeed = 0.85f;
 
+  // Slowe shooter speed for lob shots
+  private float leftShooterSpeedLob = 0.60f;
+  private float rightShooterSpeedLob = 0.60f;
+
   // private float lowSpeed = 0.65f;
 
   public ShooterSubsystem() {
@@ -83,6 +87,12 @@ public class ShooterSubsystem extends SubsystemBase {
   public void startShooter() {
     leftShooterMotor.set(leftShooterSpeed);
     rightShooterMotor.set(rightShooterSpeed);
+  }
+
+  // Spins the shooter motors for lob shots
+  public void startShooterLob() {
+    leftShooterMotor.set(leftShooterSpeedLob);
+    rightShooterMotor.set(rightShooterSpeedLob);
   }
 
   // Spins the shooter motors in reverse

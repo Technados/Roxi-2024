@@ -47,8 +47,8 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 4.0;
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
-    public static final double kDirectionSlewRate = 3.0; // 1.2 default - radians per second //peddie: 4.5
-    public static final double kMagnitudeSlewRate = 3.0; // 1.8 default - percent per second (1 = 100%) //peddie: 4.5
+    public static final double kDirectionSlewRate = 3.2; // 1.2 default - radians per second //peddie: 4.5
+    public static final double kMagnitudeSlewRate = 3.5; // 1.8 default - percent per second (1 = 100%) //peddie: 4.5
     public static final double kRotationalSlewRate = 2.0; // 2.0 default - percent per second (1 = 100%)
 
     // Chassis configuration
@@ -174,10 +174,10 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3.5;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 4; // 3
+    public static final double kMaxSpeedMetersPerSecond = 3.0;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 1.5; // 3
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
+    public static final double kMaxAngularSpeedRadiansPerSecondSquared = 0.3926991;// Math.PI / 4;
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;

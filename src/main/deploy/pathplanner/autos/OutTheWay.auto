@@ -3,14 +3,20 @@
   "startingPose": {
     "position": {
       "x": 0.73,
-      "y": 4.55
+      "y": 4.45
     },
-    "rotation": -57.129999999999995
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 10.0
+          }
+        },
         {
           "type": "path",
           "data": {

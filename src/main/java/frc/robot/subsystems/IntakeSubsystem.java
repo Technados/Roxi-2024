@@ -12,11 +12,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import frc.robot.subsystems.LEDSubsystem;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class IntakeSubsystem extends SubsystemBase {
-
+  private final LEDSubsystem m_led = new LEDSubsystem();
   /** Creates a new Intake. */
 
   private static IntakeSubsystem instance;
@@ -50,10 +51,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    // int num = (int) (intakeRingSpeed * 100);
-    // String percent = String.valueOf(num);
-    // SmartDashboard.putString("Intake Motors Speed", percent + "%");
+    m_led.controlLED();
+
   }
 
   // Returns an instance of this subsystem

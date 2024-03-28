@@ -97,8 +97,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Returns true when the encoder right arm is at it's limit
     public boolean getRightTriggerLimit() {
-        return ((leftArmEncoder.getPosition() > 62.5) ||
-                (rightArmEncoder.getPosition() > 62.5));
+        return ((leftArmEncoder.getPosition() > 63.5) ||
+                (rightArmEncoder.getPosition() > 63.5));
     }
 
     // Returns true when the encoder left arm is at it's limit

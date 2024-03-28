@@ -36,6 +36,7 @@ import frc.robot.subsystems.DriveSubsystem;
 //import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.commands.ArmControlCommand;
 import frc.robot.commands.ArmHome;
 import frc.robot.commands.AmpArm;
@@ -45,6 +46,7 @@ import frc.robot.commands.StartIntake;
 import frc.robot.commands.StartShooter;
 import frc.robot.commands.StopIntake;
 import frc.robot.commands.StopShooter;
+import frc.robot.commands.LobShooter;
 import frc.robot.hijackablemovement.AprilTagLock;
 import frc.robot.hijackablemovement.Joystick;
 import frc.robot.hijackablemovement.MovementSource;
@@ -65,7 +67,11 @@ public class RobotContainer {
 
         private final ShooterSubsystem m_shooter = new ShooterSubsystem();
 
+        // private final ShooterSubsystem m_lob = new ShooterSubsystem();
+
         private final ArmSubsystem m_arm = new ArmSubsystem();
+
+        // private final LEDSubsystem m_led = new LEDSubsystem();
 
         // private final VisionSubsystem m_cam = new VisionSubsystem();
 
@@ -88,12 +94,14 @@ public class RobotContainer {
 
         private final StopShooter stopShooterCommand = new StopShooter(m_shooter);
 
+        private final LobShooter lobShooterCommand = new LobShooter(m_shooter);
+
         private final ShootSpeakerGroup shootSpeakerParallelGroup = new ShootSpeakerGroup(m_intake, m_shooter);
 
         // create autoChooser
-        SendableChooser<String> autoChooser = new SendableChooser<>();
+        private final SendableChooser<String> autoChooser = new SendableChooser<>();
 
-        boolean isFieldRelative = true;
+        private boolean isFieldRelative = true;
 
         // Controller Buttons Used
 
@@ -161,6 +169,7 @@ public class RobotContainer {
                 NamedCommands.registerCommand("StopIntake", stopIntakeCommand);
                 NamedCommands.registerCommand("StartShooter", startShooterCommand);
                 NamedCommands.registerCommand("StopShooter", stopShooterCommand);
+                NamedCommands.registerCommand("LobShooter", lobShooterCommand);
                 // set default arm command
                 m_arm.setDefaultCommand(m_armControlCommand);
 
@@ -188,17 +197,20 @@ public class RobotContainer {
                 // Second arg is the name of the auto inside of PathPlannerGUI
 
                 autoChooser.addOption("CenterTwoPiece", "CenterTwoPiece");
-                autoChooser.addOption("AmpSideMidLine", "AmpSideMidLine");
+                autoChooser.addOption("AmpSideShootMid", "AmpSideShootMid");
                 autoChooser.addOption("Turning", "Turning");
                 autoChooser.addOption("CenterFourPiece", "CenterFourPiece");
                 autoChooser.addOption("NewCenterFourPiece", "NewCenterFourPiece");
-                autoChooser.addOption("CenterThreePiece", "CenterThreePiece");
+                autoChooser.addOption("CenterThreePieceAmpSide", "CenterThreePieceAmpSide");
+                autoChooser.addOption("CenterThreePieceSourceSide", "CenterThreePieceSourceSide");
                 autoChooser.addOption("AmpSideTwoPiece", "AmpSideTwoPiece");
                 autoChooser.addOption("OutTheWay", "OutTheWay");
+                autoChooser.addOption("OutTheWayMid", "OutTheWayMid");
                 autoChooser.addOption("CenterShootStay", "CenterShootStay");
                 autoChooser.addOption("AmpSideShootStay", "AmpSideShootStay");
                 autoChooser.addOption("SourceSideShootStay", "SourceSideShootStay");
                 autoChooser.addOption("KPTuning", "KPTuning");
+                autoChooser.addOption("Squiggle", "Squiggle");
                 autoChooser.addOption("none", null);
 
                 // Creating a new shuffleboard tab and adding the autoChooser
@@ -261,13 +273,17 @@ public class RobotContainer {
                                 .onTrue(new InstantCommand(() -> m_shooter.startShooter(), m_shooter))
                                 .onFalse(new InstantCommand(() -> m_shooter.stopShooter(), m_shooter));
 
-                // Reverse sgooters (anti-pew pew!)
+                // Reverse shooters (anti-pew pew!)
                 new JoystickButton(m_operatorController, Button.kB.value)
                                 .onTrue(new InstantCommand(() -> m_shooter.reverseShooter(), m_shooter))
                                 .onFalse(new InstantCommand(() -> m_shooter.stopShooter(), m_shooter));
 
                 new JoystickButton(m_operatorController, Button.kX.value)
                                 .onTrue(new InstantCommand(() -> m_intake.resetEncoders(), m_intake));
+
+                new JoystickButton(m_operatorController, Button.kY.value)
+                                .onTrue(new InstantCommand(() -> m_shooter.startShooterLob(), m_shooter))
+                                .onFalse(new InstantCommand(() -> m_shooter.stopShooter(), m_shooter));
 
                 // set up arm preset positions
                 // new JoystickButton(m_operatorController, XboxController.Button.kY.value)
