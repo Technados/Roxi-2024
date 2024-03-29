@@ -38,9 +38,9 @@ public class Robot extends TimedRobot {
     // enable portforwarding for limelight when tethered to robot via usb
     // Make sure you only configure port forwarding once in your robot code.
     // Do not place these function calls in any periodic functions
-    for (int port = 5800; port <= 5807; port++) {
-      PortForwarder.add(port, "limelight.local", port);
-    }
+    // for (int port = 5800; port <= 5807; port++) {
+    // PortForwarder.add(port, "limelight.local", port);
+    // }
   }
 
   /**
