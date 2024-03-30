@@ -1,7 +1,23 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-
+/**
+ * PDH Channel IDs
+ * Left Front Drive Motor Controller: 12
+ * Right Front Drive Motor Controller: 4
+ * Right rear drive motor controller: 2
+ * left rear drive motor controller: 15
+ * Left Front steer Motor Controller: 13
+ * Right Front steer Motor Controller: 3
+ * Right rear steer motor controller: 1
+ * left rear steer motor controller: 16
+ * Intake Motor controller: 11
+ * Right shooter motor controller: 10
+ * Left shooter motor controller: 17
+ * Limelight: 9
+ * Right climber motor controller: 8
+ * Left climber motor controller: 7
+ */
 package frc.robot;
 
 import com.revrobotics.CANSparkBase.IdleMode;

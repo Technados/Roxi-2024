@@ -12,12 +12,6 @@
     "data": {
       "commands": [
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 10.0
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "SourceSideToShootLine"
@@ -60,15 +54,64 @@
           }
         },
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ShootLineToOutTheWayMid"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StartIntake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidToSourceShootLine"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StartShooter"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StartIntake"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "StopIntake"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "ShootLineToOutTheWayMid"
+            "name": "StopShooter"
           }
         }
       ]
