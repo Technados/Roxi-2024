@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+    // Odometry calculates the robot's position on the field based on module states and gyro data.
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 //import edu.wpi.first.math.numbers.N3;
@@ -32,6 +33,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 public class DriveSubsystem extends SubsystemBase {
+    // This class handles the robot's swerve drive functionality, including odometry and movement.
 
   private final MAXSwerveModule[] swerveModules;
   private SwerveModulePosition[] swerveModulePositions;
@@ -40,21 +42,25 @@ public class DriveSubsystem extends SubsystemBase {
 
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
+    // Define each swerve module with its corresponding CAN IDs and angular offsets.
       DriveConstants.kFrontLeftDrivingCanId,
       DriveConstants.kFrontLeftTurningCanId,
       DriveConstants.kFrontLeftChassisAngularOffset);
 
   private final MAXSwerveModule m_frontRight = new MAXSwerveModule(
+    // Define each swerve module with its corresponding CAN IDs and angular offsets.
       DriveConstants.kFrontRightDrivingCanId,
       DriveConstants.kFrontRightTurningCanId,
       DriveConstants.kFrontRightChassisAngularOffset);
 
   private final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
+    // Define each swerve module with its corresponding CAN IDs and angular offsets.
       DriveConstants.kRearLeftDrivingCanId,
       DriveConstants.kRearLeftTurningCanId,
       DriveConstants.kBackLeftChassisAngularOffset);
 
   private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
+    // Define each swerve module with its corresponding CAN IDs and angular offsets.
       DriveConstants.kRearRightDrivingCanId,
       DriveConstants.kRearRightTurningCanId,
       DriveConstants.kBackRightChassisAngularOffset);
@@ -65,6 +71,7 @@ public class DriveSubsystem extends SubsystemBase {
   //// Additional change: since using NavX-2 gyro, all getAngle calls in the drive
   // sub system had to be chnaged to negative values
   private final AHRS m_gyro = new AHRS(SerialPort.Port.kUSB);
+    // The NavX gyro is used to track the robot's orientation on the field.
 
   ////////////////////////////////////////////////////////////////////////////////////
 
@@ -85,8 +92,10 @@ public class DriveSubsystem extends SubsystemBase {
   // }
 
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+    // Odometry calculates the robot's position on the field based on module states and gyro data.
       DriveConstants.kDriveKinematics,
       Rotation2d.fromDegrees(-m_gyro.getAngle()),
+    // The NavX gyro is used to track the robot's orientation on the field.
       new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -99,6 +108,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   // SwerveDrivePoseEstimator m_PoseEstimator = new SwerveDrivePoseEstimator(
   // DriveConstants.kDriveKinematics, Rotation2d.fromDegrees(-m_gyro.getAngle()),
+    // The NavX gyro is used to track the robot's orientation on the field.
   // new SwerveModulePosition[] {
   // m_frontLeft.getPosition(),
   // m_frontRight.getPosition(),
@@ -110,11 +120,15 @@ public class DriveSubsystem extends SubsystemBase {
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////////
   /** Creates a new DriveSubsystem. */
+    // This class handles the robot's swerve drive functionality, including odometry and movement.
   public DriveSubsystem() {
+    // This class handles the robot's swerve drive functionality, including odometry and movement.
     // Do all subsystem initialization here
     // ...
     swerveModules = new MAXSwerveModule[] { m_frontLeft, m_frontRight, m_rearLeft, m_rearRight };
+    // Define each swerve module with its corresponding CAN IDs and angular offsets.
     swerveModulePositions = new SwerveModulePosition[] { m_frontLeft.getPosition(), m_frontRight.getPosition(),
+    // Retrieve the current positions of the swerve modules for odometry updates.
         m_rearLeft.getPosition(), m_rearRight.getPosition() };
 
     // it is recommended to configure AutoBuilder at the end of your drive
@@ -122,7 +136,9 @@ public class DriveSubsystem extends SubsystemBase {
     // Configure the AutoBuilder last
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
+    // Retrieves the robot's current estimated position on the field.
         this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+    // Resets the robot's position on the field to a specified pose.
         this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
@@ -147,6 +163,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // Periodic updates include odometry and data sent to the SmartDashboard.
     SmartDashboard.putNumber("Gyro", getHeading()); // returns the heading of the robot and sends to dashboard
 
     // for (int i = 0; i < 4; i++) {
@@ -155,8 +172,10 @@ public class DriveSubsystem extends SubsystemBase {
     // }
 
     // Update the odometry in the periodic block
+    // Periodic updates include odometry and data sent to the SmartDashboard.
     m_odometry.update(
         Rotation2d.fromDegrees(-m_gyro.getAngle()),
+    // The NavX gyro is used to track the robot's orientation on the field.
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -166,9 +185,11 @@ public class DriveSubsystem extends SubsystemBase {
         });
 
     SmartDashboard.putNumber("2DPose X", m_odometry.getPoseMeters().getX()); //
+    // Retrieves the robot's current estimated position on the field.
     // gets the field relative 'x' position of
     // the robot and send to dashboard
     SmartDashboard.putNumber("2DPose Y", m_odometry.getPoseMeters().getY()); //
+    // Retrieves the robot's current estimated position on the field.
     // gets the field relative 'y' position of
     // the robot and send to dashboard
 
@@ -180,7 +201,9 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The pose.
    */
   public Pose2d getPose() {
+    // Retrieves the robot's current estimated position on the field.
     return m_odometry.getPoseMeters();
+    // Retrieves the robot's current estimated position on the field.
   }
 
   /**
@@ -189,8 +212,10 @@ public class DriveSubsystem extends SubsystemBase {
    * @param pose The pose to which to set the odometry.
    */
   public void resetOdometry(Pose2d pose) {
+    // Resets the robot's position on the field to a specified pose.
     m_odometry.resetPosition(
         Rotation2d.fromDegrees(-m_gyro.getAngle()),
+    // The NavX gyro is used to track the robot's orientation on the field.
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
@@ -215,6 +240,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
 
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+    // Method to control robot movement using speed inputs and optional field-relative control.
 
     double xSpeedCommanded;
     double ySpeedCommanded;
@@ -274,6 +300,7 @@ public class DriveSubsystem extends SubsystemBase {
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
                 Rotation2d.fromDegrees(-m_gyro.getAngle()))
+    // The NavX gyro is used to track the robot's orientation on the field.
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, maxSpeedMPS);
@@ -289,6 +316,7 @@ public class DriveSubsystem extends SubsystemBase {
    * on driver controller)
    */
   public void setX() {
+    // Locks the robot's wheels in an X formation to prevent unwanted movement.
     m_frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
     m_frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
     m_rearLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
@@ -321,6 +349,7 @@ public class DriveSubsystem extends SubsystemBase {
   // start button on driver controller
   public void zeroHeading() {
     m_gyro.reset();
+    // The NavX gyro is used to track the robot's orientation on the field.
   }
 
   /**
@@ -330,6 +359,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public double getHeading() {
     return Rotation2d.fromDegrees(-m_gyro.getAngle()).getDegrees();
+    // The NavX gyro is used to track the robot's orientation on the field.
   }
 
   public SwerveModuleState[] getModuleStates() {
@@ -348,6 +378,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   //
   public void driveRobotRelative(ChassisSpeeds speeds) {
+    // Method to control robot movement using speed inputs and optional field-relative control.
     // set blow rate limitting to false for PathPlanner because it applies
     // acceleration constants
     drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false, false);
@@ -361,6 +392,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+    // The NavX gyro is used to track the robot's orientation on the field.
   }
 
   public void setHighSpeed() {
